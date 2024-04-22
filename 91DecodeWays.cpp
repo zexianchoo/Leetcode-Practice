@@ -1,15 +1,24 @@
-/* Created on 14 09 2023 - 11:12PM */ 
+/* Created on 15 04 2024 - 03:01PM */ 
 class Solution {
 public:
     int numDecodings(string s) {
-        return s.empty() ? 0 : numDecodings(0, s);
-    }
-    int numDecodings(int p, string& s) {
-        int n = s.size();
-        if (p == n) { return 1; }
-        if (s[p] == '0') return 0;
-        int res = numDecodings(p + 1, s);
-        if (p < n-1 && (s[p]=='1'|| (s[p]=='2'&& s[p+1]<'7'))) res += numDecodings(p+2,s);
-        return res;
+        vector<int>dp(s.size() + 1, 1);
+        if(s.empty()) { return 0; }
+        
+        if (s[s.size() - 1] == '0') { dp[s.size() - 1] = 0; }
+        else { dp[s.size() - 1] = 1; }
+        
+        // dp from the back
+        for (int i = s.size() - 2; i >= 0; i -= 1) {
+            // if this is 0, there is no way to decode this or the stuff in front.
+            if (s[i] == '0') { dp[i] = 0; }
+            else if (s[i] == '1' || s[i] == '2' && s[i + 1] <= '6') {
+                dp[i] = dp[i + 1] + dp[i + 2];
+            }
+            else {
+                dp[i] = dp[i + 1];
+            }
+        }
+        return dp[0];
     }
 };

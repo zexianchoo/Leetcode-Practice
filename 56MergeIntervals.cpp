@@ -1,30 +1,23 @@
-/* Created on 05 06 2023 - 07:36PM */ 
+/* Created on 03 04 2024 - 10:13AM */ 
 class Solution {
 public:
     vector<vector<int>> merge(vector<vector<int>>& intervals) {
-        vector<vector<int>> res;
-        // sort by first number in each interval
+        // sort by first:
         sort(intervals.begin(), intervals.end());
-     
-        // same thing, we use a greedy method.
-        int curr = 0; int max_reach = intervals[0][1];
-        int prev_start = intervals[0][0];
-        // curr will be index of intervals
-        for (; curr < intervals.size(); curr += 1) {
-            // if we have passed the interval, push to res
-            if (intervals[curr][0] > max_reach) { 
-                res.push_back({prev_start, max_reach});
-                // update counters
-                prev_start = intervals[curr][0];
-                max_reach = intervals[curr][1];
-            }
-            // update max reach and continue
+        
+        vector<vector<int>> res;
+        for (int i = 0; i < intervals.size(); i += 1) {
+            if (res.empty()) { res.push_back(intervals[i]); }
             else {
-                max_reach = max(max_reach, intervals[curr][1]);
+                // check vector.back - if the R of back > L or curr, update vector.back
+                if (res.back()[1] >= intervals[i][0]) {
+                    res.back()[1] = max(intervals[i][1], res.back()[1]);
+                }
+                else {
+                    res.push_back(intervals[i]);
+                }
             }
         }
-        // handle last instance
-         res.push_back({prev_start, max_reach});
         return res;
     }
 };
